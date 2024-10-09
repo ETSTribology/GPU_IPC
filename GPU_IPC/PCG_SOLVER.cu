@@ -523,7 +523,7 @@ __global__ void __PCG_Solve_AXALL_b2(const __GEIGEN__::Matrix12x12d* Hessians12,
         int warpId = threadIdx.x & 0x1f;
         bool bBoundary = (landidx == 0) || (warpId == 0);
 
-        unsigned int mark = __ballot(bBoundary);
+        unsigned int mark = __ballot_sync(0xffffffff, bBoundary);
         mark = __brev(mark);
         unsigned int interval = __m_min(__clz(mark << (warpId + 1)), 31 - warpId);
 
@@ -563,7 +563,7 @@ __global__ void __PCG_Solve_AXALL_b2(const __GEIGEN__::Matrix12x12d* Hessians12,
         int warpId = threadIdx.x & 0x1f;
         bool bBoundary = (landidx == 0) || (warpId == 0);
 
-        unsigned int mark = __ballot(bBoundary); // a bit-mask 
+        unsigned int mark = __ballot_sync(0xffffffff, bBoundary);
         mark = __brev(mark);
         unsigned int interval = __m_min(__clz(mark << (warpId + 1)), 31 - warpId);
 
@@ -603,7 +603,7 @@ __global__ void __PCG_Solve_AXALL_b2(const __GEIGEN__::Matrix12x12d* Hessians12,
         int warpId = threadIdx.x & 0x1f;
         bool bBoundary = (landidx == 0) || (warpId == 0);
 
-        unsigned int mark = __ballot(bBoundary);
+        unsigned int mark = __ballot_sync(0xffffffff, bBoundary);
         mark = __brev(mark);
         unsigned int interval = __m_min(__clz(mark << (warpId + 1)), 31 - warpId);
 
@@ -664,7 +664,7 @@ __global__ void __PCG_Solve_AX12_b2(const __GEIGEN__::Matrix12x12d* Hessians, co
     int warpId = threadIdx.x & 0x1f;
     bool bBoundary = (landidx == 0) || (warpId == 0);
 
-    unsigned int mark = __ballot(bBoundary);
+    unsigned int mark = __ballot_sync(0xffffffff, bBoundary);
     mark = __brev(mark);
     unsigned int interval = __m_min(__clz(mark << (warpId + 1)), 31 - warpId);
     //mark = interval;
@@ -743,7 +743,7 @@ __global__ void __PCG_Solve_AX12_b3(const __GEIGEN__::Matrix12x12d* Hessians, co
     int warpId = threadIdx.x & 0x1f;
     bool bBoundary = (landidx == 0) || (warpId == 0);
 
-    unsigned int mark = __ballot(bBoundary);
+    unsigned int mark = __ballot_sync(0xffffffff, bBoundary);
     mark = __brev(mark);
     unsigned int interval = __m_min(__clz(mark << (warpId + 1)), 31 - warpId);
 
@@ -927,7 +927,7 @@ __global__ void __PCG_Solve_AX9_b2(const __GEIGEN__::Matrix9x9d* Hessians, const
     int warpId = threadIdx.x & 0x1f;
     bool bBoundary = (landidx == 0) || (warpId == 0);
 
-    unsigned int mark = __ballot(bBoundary); // a bit-mask 
+    unsigned int mark = __ballot_sync(0xffffffff, bBoundary);
     mark = __brev(mark);
     unsigned int interval = __m_min(__clz(mark << (warpId + 1)), 31 - warpId);
     //mark = interval;
@@ -1025,7 +1025,7 @@ __global__ void __PCG_Solve_AX6_b2(const __GEIGEN__::Matrix6x6d* Hessians, const
     int warpId = threadIdx.x & 0x1f;
     bool bBoundary = (landidx == 0) || (warpId == 0);
 
-    unsigned int mark = __ballot(bBoundary);
+    unsigned int mark = __ballot_sync(0xffffffff, bBoundary);
     mark = __brev(mark);
     unsigned int interval = __m_min(__clz(mark << (warpId + 1)), 31 - warpId);
     //mark = interval;
@@ -1120,7 +1120,7 @@ __global__ void __PCG_Solve_AX3_b2(const __GEIGEN__::Matrix3x3d* Hessians, const
     int warpId = threadIdx.x & 0x1f;
     bool bBoundary = (landidx == 0) || (warpId == 0);
 
-    unsigned int mark = __ballot(bBoundary);
+    unsigned int mark = __ballot_sync(0xffffffff, bBoundary);
     mark = __brev(mark);
     unsigned int interval = __m_min(__clz(mark << (warpId + 1)), 31 - warpId);
     mark = interval;
