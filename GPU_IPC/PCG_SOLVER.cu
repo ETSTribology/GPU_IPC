@@ -1128,7 +1128,7 @@ __global__ void __PCG_Solve_AX3_b2(const __GEIGEN__::Matrix3x3d* Hessians, const
         int tmp = __shfl_down_sync(0xffffffff, rdata, iter);
         mark = tmp > mark ? tmp : mark;
     }
-    mark = __shfl(mark, 0);
+    mark = __shfl_sync(0xffffffff, mark, 0);
     __syncthreads();
 
     for (int iter = 1; iter <= mark; iter <<= 1) {

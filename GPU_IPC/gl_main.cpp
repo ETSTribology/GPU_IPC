@@ -25,6 +25,7 @@
 #include "fem_parameters.h"
 #include "gipc_path.h"
 
+#include <cmath>
 
 int collision_detection_buff_scale = 1;
 double motion_rate = 1;

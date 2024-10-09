@@ -1178,7 +1178,7 @@ __global__ void _schwarzLocalXSym3(const __GEIGEN__::MasMatrixSymf* Pred,
     int  landidx   = threadIdx.x % BANKSIZE;
     bool bBoundary = (landidx == 0) || (warpId == 0);
 
-    unsigned int mark     = __ballot(bBoundary);  // a bit-mask
+    unsigned int mark     = __ballot_sync(0xFFFFFFFF, bBoundary);
     mark                  = __brev(mark);
     unsigned int interval = __mm_min(__clz(mark << (warpId + 1)), 31 - warpId);
 
