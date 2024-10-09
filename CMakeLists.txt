@@ -14,21 +14,17 @@ if(UNIX)
 endif()
 
 # Set CUDA version and path
-find_package(CUDA 12.6 REQUIRED)
-set(CUDA_MIN_VERSION "12.6")
-
-if(${CUDA_VERSION} VERSION_LESS ${CUDA_MIN_VERSION})
-    message(FATAL_ERROR "CUDA version must be ${CUDA_MIN_VERSION} or higher!")
-endif()
-
+find_package(CUDA 11.8 REQUIRED)
 # Set CUDA Compiler
 if(UNIX AND NOT DEFINED CMAKE_CUDA_COMPILER)
-    set(CMAKE_CUDA_COMPILER "/usr/local/cuda-12.6/bin/nvcc" CACHE FILEPATH "Path to CUDA Compiler")
+    set(CMAKE_CUDA_COMPILER "/usr/local/cuda-11.8/bin/nvcc" CACHE FILEPATH "Path to CUDA Compiler")
 endif()
 
 # Set CUDA standard and architecture
 set(CMAKE_CUDA_STANDARD 17)
 set(CMAKE_CUDA_ARCHITECTURES "60;70;75;80;86")
+cmake_policy(SET CMP0146 NEW)
+
 
 # Find required packages
 find_package(Eigen3 3.4 REQUIRED)

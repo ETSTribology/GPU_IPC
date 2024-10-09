@@ -240,7 +240,7 @@ void _reduct_max_double3_to_double(const double3* _double3Dim, double* _double1D
         warpNum = ((blockDim.x) >> 5);
     }
     for (int i = 1; i < 32; i = (i << 1)) {
-        double tempMin = __shfl_down(temp, i);
+        double tempMin = __shfl_down_sync(0xFFFFFFFF, temp, i);
         temp = __m_max(temp, tempMin);
     }
     if (warpTid == 0) {
@@ -254,7 +254,7 @@ void _reduct_max_double3_to_double(const double3* _double3Dim, double* _double1D
 
         //	warpNum = ((tidNum + 31) >> 5);
         for (int i = 1; i < warpNum; i = (i << 1)) {
-            double tempMin = __shfl_down(temp, i);
+            double tempMin = __shfl_down_sync(0xFFFFFFFF, temp, i);
             temp = __m_max(temp, tempMin);
         }
     }
@@ -290,7 +290,7 @@ void _reduct_min_double(double* _double1Dim, int number) {
         warpNum = ((blockDim.x) >> 5);
     }
     for (int i = 1; i < 32; i = (i << 1)) {
-        double tempMin = __shfl_down(temp, i);
+        double tempMin = __shfl_down_sync(0xFFFFFFFF, temp, i);
         temp = __m_min(temp, tempMin);
     }
     if (warpTid == 0) {
@@ -304,7 +304,7 @@ void _reduct_min_double(double* _double1Dim, int number) {
 
         //	warpNum = ((tidNum + 31) >> 5);
         for (int i = 1; i < warpNum; i = (i << 1)) {
-            double tempMin = __shfl_down(temp, i);
+            double tempMin = __shfl_down_sync(0xFFFFFFFF, temp, i);
             temp = __m_min(temp, tempMin);
         }
     }
@@ -340,8 +340,8 @@ void _reduct_M_double2(double2* _double2Dim, int number) {
         warpNum = ((blockDim.x) >> 5);
     }
     for (int i = 1; i < 32; i = (i << 1)) {
-        double tempMin = __shfl_down(temp.x, i);
-        double tempMax = __shfl_down(temp.y, i);
+        double tempMin = __shfl_down_sync(0xFFFFFFFF, temp.x, i);
+        double tempMax = __shfl_down_sync(0xFFFFFFFF, temp.y, i);
         temp.x = __m_max(temp.x, tempMin);
         temp.y = __m_max(temp.y, tempMax);
     }
@@ -356,8 +356,8 @@ void _reduct_M_double2(double2* _double2Dim, int number) {
 
         //	warpNum = ((tidNum + 31) >> 5);
         for (int i = 1; i < warpNum; i = (i << 1)) {
-            double tempMin = __shfl_down(temp.x, i);
-            double tempMax = __shfl_down(temp.y, i);
+            double tempMin = __shfl_down_sync(0xFFFFFFFF, temp.x, i);
+            double tempMax = __shfl_down_sync(0xFFFFFFFF, temp.y, i);
             temp.x = __m_max(temp.x, tempMin);
             temp.y = __m_max(temp.y, tempMax);
         }
@@ -394,7 +394,7 @@ void _reduct_max_double(double* _double1Dim, int number) {
         warpNum = ((blockDim.x) >> 5);
     }
     for (int i = 1; i < 32; i = (i << 1)) {
-        double tempMax = __shfl_down(temp, i);
+        double tempMax = __shfl_down_sync(0xFFFFFFFF, temp, i);
         temp = __m_max(temp, tempMax);
     }
     if (warpTid == 0) {
@@ -408,7 +408,7 @@ void _reduct_max_double(double* _double1Dim, int number) {
 
         //	warpNum = ((tidNum + 31) >> 5);
         for (int i = 1; i < warpNum; i = (i << 1)) {
-            double tempMax = __shfl_down(temp, i);
+            double tempMax = __shfl_down_sync(0xFFFFFFFF, temp, i);
             temp = __m_max(temp, tempMax);
         }
     }
@@ -3232,8 +3232,8 @@ void _reduct_MSelfDist(const double3* _vertexes, int4* _collisionPairs, double2*
         warpNum = ((blockDim.x) >> 5);
     }
     for (int i = 1; i < 32; i = (i << 1)) {
-        double tempMin = __shfl_down(temp.x, i);
-        double tempMax = __shfl_down(temp.y, i);
+        double tempMin = __shfl_down_sync(0xFFFFFFFF, temp.x, i);
+        double tempMax = __shfl_down_sync(0xFFFFFFFF, temp.y, i);
         temp.x = __m_max(temp.x, tempMin);
         temp.y = __m_max(temp.y, tempMax);
     }
@@ -3248,8 +3248,8 @@ void _reduct_MSelfDist(const double3* _vertexes, int4* _collisionPairs, double2*
 
         //	warpNum = ((tidNum + 31) >> 5);
         for (int i = 1; i < warpNum; i = (i << 1)) {
-            double tempMin = __shfl_down(temp.x, i);
-            double tempMax = __shfl_down(temp.y, i);
+            double tempMin = __shfl_down_sync(0xFFFFFFFF, temp.x, i);
+            double tempMax = __shfl_down_sync(0xFFFFFFFF, temp.y, i);
             temp.x = __m_max(temp.x, tempMin);
             temp.y = __m_max(temp.y, tempMax);
         }
@@ -4341,8 +4341,8 @@ void _reduct_MGroundDist(const double3* vertexes, const double* g_offset, const 
         warpNum = ((blockDim.x) >> 5);
     }
     for (int i = 1; i < 32; i = (i << 1)) {
-        double tempMin = __shfl_down(temp.x, i);
-        double tempMax = __shfl_down(temp.y, i);
+        double tempMin = __shfl_down_sync(0xFFFFFFFF, temp.x, i);
+        double tempMax = __shfl_down_sync(0xFFFFFFFF, temp.y, i);
         temp.x = __m_max(temp.x, tempMin);
         temp.y = __m_max(temp.y, tempMax);
     }
@@ -4357,8 +4357,8 @@ void _reduct_MGroundDist(const double3* vertexes, const double* g_offset, const 
 
         //	warpNum = ((tidNum + 31) >> 5);
         for (int i = 1; i < warpNum; i = (i << 1)) {
-            double tempMin = __shfl_down(temp.x, i);
-            double tempMax = __shfl_down(temp.y, i);
+            double tempMin = __shfl_down_sync(0xFFFFFFFF, temp.x, i);
+            double tempMax = __shfl_down_sync(0xFFFFFFFF, temp.y, i);
             temp.x = __m_max(temp.x, tempMin);
             temp.y = __m_max(temp.y, tempMax);
         }
@@ -4433,7 +4433,7 @@ void _getFrictionEnergy_Reduction_3D(double* squeue,
         warpNum = ((blockDim.x) >> 5);
     }
     for (int i = 1; i < 32; i = (i << 1)) {
-        temp += __shfl_down(temp, i);
+        temp += __shfl_down_sync(0xFFFFFFFF, temp, i);
     }
     if (warpTid == 0) {
         tep[warpId] = temp;
@@ -4445,7 +4445,7 @@ void _getFrictionEnergy_Reduction_3D(double* squeue,
         temp = tep[threadIdx.x];
         //	warpNum = ((tidNum + 31) >> 5);
         for (int i = 1; i < warpNum; i = (i << 1)) {
-            temp += __shfl_down(temp, i);
+            temp += __shfl_down_sync(0xFFFFFFFF, temp, i);
         }
     }
     if (threadIdx.x == 0) {
@@ -4487,7 +4487,7 @@ void _getFrictionEnergy_gd_Reduction_3D(double* squeue,
         warpNum = ((blockDim.x) >> 5);
     }
     for (int i = 1; i < 32; i = (i << 1)) {
-        temp += __shfl_down(temp, i);
+        temp += __shfl_down_sync(0xFFFFFFFF, temp, i);
     }
     if (warpTid == 0) {
         tep[warpId] = temp;
@@ -4499,7 +4499,7 @@ void _getFrictionEnergy_gd_Reduction_3D(double* squeue,
         temp = tep[threadIdx.x];
         //	warpNum = ((tidNum + 31) >> 5);
         for (int i = 1; i < warpNum; i = (i << 1)) {
-            temp += __shfl_down(temp, i);
+            temp += __shfl_down_sync(0xFFFFFFFF, temp, i);
         }
     }
     if (threadIdx.x == 0) {
@@ -4535,7 +4535,7 @@ void _computeGroundEnergy_Reduction(double* squeue, const double3* vertexes, con
         warpNum = ((blockDim.x) >> 5);
     }
     for (int i = 1; i < 32; i = (i << 1)) {
-        temp += __shfl_down(temp, i);
+        temp += __shfl_down_sync(0xFFFFFFFF, temp, i);
     }
     if (warpTid == 0) {
         tep[warpId] = temp;
@@ -4548,7 +4548,7 @@ void _computeGroundEnergy_Reduction(double* squeue, const double3* vertexes, con
 
         //	warpNum = ((tidNum + 31) >> 5);
         for (int i = 1; i < warpNum; i = (i << 1)) {
-            temp += __shfl_down(temp, i);
+            temp += __shfl_down_sync(0xFFFFFFFF, temp, i);
         }
     }
     if (threadIdx.x == 0) {
@@ -4592,7 +4592,7 @@ void _reduct_min_groundTimeStep_to_double(const double3* vertexes, const uint32_
         warpNum = ((blockDim.x) >> 5);
     }
     for (int i = 1; i < 32; i = (i << 1)) {
-        double tempMin = __shfl_down(temp, i);
+        double tempMin = __shfl_down_sync(0xFFFFFFFF, temp, i);
         temp = __m_max(temp, tempMin);
     }
     if (warpTid == 0) {
@@ -4606,7 +4606,7 @@ void _reduct_min_groundTimeStep_to_double(const double3* vertexes, const uint32_
 
         //	warpNum = ((tidNum + 31) >> 5);
         for (int i = 1; i < warpNum; i = (i << 1)) {
-            double tempMin = __shfl_down(temp, i);
+            double tempMin = __shfl_down_sync(0xFFFFFFFF, temp, i);
             temp = __m_max(temp, tempMin);
         }
     }
@@ -4643,7 +4643,7 @@ void _reduct_min_InjectiveTimeStep_to_double(const double3* vertexes, const uint
         warpNum = ((blockDim.x) >> 5);
     }
     for (int i = 1; i < 32; i = (i << 1)) {
-        double tempMin = __shfl_down(temp, i);
+        double tempMin = __shfl_down_sync(0xFFFFFFFF, temp, i);
         temp = __m_max(temp, tempMin);
     }
     if (warpTid == 0) {
@@ -4657,7 +4657,7 @@ void _reduct_min_InjectiveTimeStep_to_double(const double3* vertexes, const uint
 
         //	warpNum = ((tidNum + 31) >> 5);
         for (int i = 1; i < warpNum; i = (i << 1)) {
-            double tempMin = __shfl_down(temp, i);
+            double tempMin = __shfl_down_sync(0xFFFFFFFF, temp, i);
             temp = __m_max(temp, tempMin);
         }
     }
@@ -4728,7 +4728,7 @@ void _reduct_min_selfTimeStep_to_double(const double3* vertexes, const int4* _cc
         warpNum = ((blockDim.x) >> 5);
     }
     for (int i = 1; i < 32; i = (i << 1)) {
-        double tempMin = __shfl_down(temp, i);
+        double tempMin = __shfl_down_sync(0xFFFFFFFF, temp, i);
         temp = __m_max(temp, tempMin);
     }
     if (warpTid == 0) {
@@ -4742,7 +4742,7 @@ void _reduct_min_selfTimeStep_to_double(const double3* vertexes, const int4* _cc
 
         //	warpNum = ((tidNum + 31) >> 5);
         for (int i = 1; i < warpNum; i = (i << 1)) {
-            double tempMin = __shfl_down(temp, i);
+            double tempMin = __shfl_down_sync(0xFFFFFFFF, temp, i);
             temp = __m_max(temp, tempMin);
         }
     }
@@ -4777,7 +4777,7 @@ void _reduct_max_cfl_to_double(const double3* moveDir, double* max_double_val, u
         warpNum = ((blockDim.x) >> 5);
     }
     for (int i = 1; i < 32; i = (i << 1)) {
-        double tempMax = __shfl_down(temp, i);
+        double tempMax = __shfl_down_sync(0xFFFFFFFF, temp, i);
         temp = __m_max(temp, tempMax);
     }
     if (warpTid == 0) {
@@ -4791,7 +4791,7 @@ void _reduct_max_cfl_to_double(const double3* moveDir, double* max_double_val, u
 
         //	warpNum = ((tidNum + 31) >> 5);
         for (int i = 1; i < warpNum; i = (i << 1)) {
-            double tempMax = __shfl_down(temp, i);
+            double tempMax = __shfl_down_sync(0xFFFFFFFF, temp, i);
             temp = __m_max(temp, tempMax);
         }
     }
@@ -4826,8 +4826,8 @@ void _reduct_double3Sqn_to_double(const double3* A, double* D, int number) {
         warpNum = ((blockDim.x) >> 5);
     }
     for (int i = 1; i < 32; i = (i << 1)) {
-        //double tempMax = __shfl_down(temp, i);
-        temp += __shfl_down(temp, i);
+        //double tempMax = __shfl_down_sync(0xFFFFFFFF, temp, i);
+        temp += __shfl_down_sync(0xFFFFFFFF, temp, i);
     }
     if (warpTid == 0) {
         tep[warpId] = temp;
@@ -4840,7 +4840,7 @@ void _reduct_double3Sqn_to_double(const double3* A, double* D, int number) {
 
         //	warpNum = ((tidNum + 31) >> 5);
         for (int i = 1; i < warpNum; i = (i << 1)) {
-            temp += __shfl_down(temp, i);
+            temp += __shfl_down_sync(0xFFFFFFFF, temp, i);
         }
     }
     if (threadIdx.x == 0) {
@@ -4874,8 +4874,8 @@ void _reduct_double3Dot_to_double(const double3* A, const double3* B, double* D,
         warpNum = ((blockDim.x) >> 5);
     }
     for (int i = 1; i < 32; i = (i << 1)) {
-        //double tempMax = __shfl_down(temp, i);
-        temp += __shfl_down(temp, i);
+        //double tempMax = __shfl_down_sync(0xFFFFFFFF, temp, i);
+        temp += __shfl_down_sync(0xFFFFFFFF, temp, i);
     }
     if (warpTid == 0) {
         tep[warpId] = temp;
@@ -4888,7 +4888,7 @@ void _reduct_double3Dot_to_double(const double3* A, const double3* B, double* D,
 
         //	warpNum = ((tidNum + 31) >> 5);
         for (int i = 1; i < warpNum; i = (i << 1)) {
-            temp += __shfl_down(temp, i);
+            temp += __shfl_down_sync(0xFFFFFFFF, temp, i);
         }
     }
     if (threadIdx.x == 0) {
@@ -4922,7 +4922,7 @@ void _getKineticEnergy_Reduction_3D(double3* _vertexes, double3* _xTilta, double
         warpNum = ((blockDim.x) >> 5);
     }
     for (int i = 1; i < 32; i = (i << 1)) {
-        temp += __shfl_down(temp, i);
+        temp += __shfl_down_sync(0xFFFFFFFF, temp, i);
     }
     if (warpTid == 0) {
         tep[warpId] = temp;
@@ -4935,7 +4935,7 @@ void _getKineticEnergy_Reduction_3D(double3* _vertexes, double3* _xTilta, double
 
         //	warpNum = ((tidNum + 31) >> 5);
         for (int i = 1; i < warpNum; i = (i << 1)) {
-            temp += __shfl_down(temp, i);
+            temp += __shfl_down_sync(0xFFFFFFFF, temp, i);
         }
     }
     if (threadIdx.x == 0) {
@@ -4975,7 +4975,7 @@ void _getBendingEnergy_Reduction(double* squeue, const double3* vertexes, const 
         warpNum = ((blockDim.x) >> 5);
     }
     for (int i = 1; i < 32; i = (i << 1)) {
-        temp += __shfl_down(temp, i);
+        temp += __shfl_down_sync(0xFFFFFFFF, temp, i);
     }
     if (warpTid == 0) {
         tep[warpId] = temp;
@@ -4987,7 +4987,7 @@ void _getBendingEnergy_Reduction(double* squeue, const double3* vertexes, const 
         temp = tep[threadIdx.x];
         //	warpNum = ((tidNum + 31) >> 5);
         for (int i = 1; i < warpNum; i = (i << 1)) {
-            temp += __shfl_down(temp, i);
+            temp += __shfl_down_sync(0xFFFFFFFF, temp, i);
         }
     }
     if (threadIdx.x == 0) {
@@ -5025,7 +5025,7 @@ void _getFEMEnergy_Reduction_3D(double* squeue, const double3* vertexes, const u
         warpNum = ((blockDim.x) >> 5);
     }
     for (int i = 1; i < 32; i = (i << 1)) {
-        temp += __shfl_down(temp, i);
+        temp += __shfl_down_sync(0xFFFFFFFF, temp, i);
     }
     if (warpTid == 0) {
         tep[warpId] = temp;
@@ -5037,7 +5037,7 @@ void _getFEMEnergy_Reduction_3D(double* squeue, const double3* vertexes, const u
         temp = tep[threadIdx.x];
         //	warpNum = ((tidNum + 31) >> 5);
         for (int i = 1; i < warpNum; i = (i << 1)) {
-            temp += __shfl_down(temp, i);
+            temp += __shfl_down_sync(0xFFFFFFFF, temp, i);
         }
     }
     if (threadIdx.x == 0) {
@@ -5070,7 +5070,7 @@ void _computeSoftConstraintEnergy_Reduction(double* squeue, const double3* verte
         warpNum = ((blockDim.x) >> 5);
     }
     for (int i = 1; i < 32; i = (i << 1)) {
-        temp += __shfl_down(temp, i);
+        temp += __shfl_down_sync(0xFFFFFFFF, temp, i);
     }
     if (warpTid == 0) {
         tep[warpId] = temp;
@@ -5083,7 +5083,7 @@ void _computeSoftConstraintEnergy_Reduction(double* squeue, const double3* verte
 
         //	warpNum = ((tidNum + 31) >> 5);
         for (int i = 1; i < warpNum; i = (i << 1)) {
-            temp += __shfl_down(temp, i);
+            temp += __shfl_down_sync(0xFFFFFFFF, temp, i);
         }
     }
     if (threadIdx.x == 0) {
@@ -5116,7 +5116,7 @@ void _get_triangleFEMEnergy_Reduction_3D(double* squeue, const double3* vertexes
         warpNum = ((blockDim.x) >> 5);
     }
     for (int i = 1; i < 32; i = (i << 1)) {
-        temp += __shfl_down(temp, i);
+        temp += __shfl_down_sync(0xFFFFFFFF, temp, i);
     }
     if (warpTid == 0) {
         tep[warpId] = temp;
@@ -5128,7 +5128,7 @@ void _get_triangleFEMEnergy_Reduction_3D(double* squeue, const double3* vertexes
         temp = tep[threadIdx.x];
         //	warpNum = ((tidNum + 31) >> 5);
         for (int i = 1; i < warpNum; i = (i << 1)) {
-            temp += __shfl_down(temp, i);
+            temp += __shfl_down_sync(0xFFFFFFFF, temp, i);
         }
     }
     if (threadIdx.x == 0) {
@@ -5159,7 +5159,7 @@ void _getRestStableNHKEnergy_Reduction_3D(double* squeue, const double* volume, 
         warpNum = ((blockDim.x) >> 5);
     }
     for (int i = 1; i < 32; i = (i << 1)) {
-        temp += __shfl_down(temp, i);
+        temp += __shfl_down_sync(0xFFFFFFFF, temp, i);
     }
     if (warpTid == 0) {
         tep[warpId] = temp;
@@ -5171,7 +5171,7 @@ void _getRestStableNHKEnergy_Reduction_3D(double* squeue, const double* volume, 
         temp = tep[threadIdx.x];
         //	warpNum = ((tidNum + 31) >> 5);
         for (int i = 1; i < warpNum; i = (i << 1)) {
-            temp += __shfl_down(temp, i);
+            temp += __shfl_down_sync(0xFFFFFFFF, temp, i);
         }
     }
     if (threadIdx.x == 0) {
@@ -5203,7 +5203,7 @@ void _getBarrierEnergy_Reduction_3D(double* squeue, const double3* vertexes, con
         warpNum = ((blockDim.x) >> 5);
     }
     for (int i = 1; i < 32; i = (i << 1)) {
-        temp += __shfl_down(temp, i);
+        temp += __shfl_down_sync(0xFFFFFFFF, temp, i);
     }
     if (warpTid == 0) {
         tep[warpId] = temp;
@@ -5215,7 +5215,7 @@ void _getBarrierEnergy_Reduction_3D(double* squeue, const double3* vertexes, con
         temp = tep[threadIdx.x];
         //	warpNum = ((tidNum + 31) >> 5);
         for (int i = 1; i < warpNum; i = (i << 1)) {
-            temp += __shfl_down(temp, i);
+            temp += __shfl_down_sync(0xFFFFFFFF, temp, i);
         }
     }
     if (threadIdx.x == 0) {
@@ -5248,7 +5248,7 @@ void _getDeltaEnergy_Reduction(double* squeue, const double3* b, const double3* 
         warpNum = ((blockDim.x) >> 5);
     }
     for (int i = 1; i < 32; i = (i << 1)) {
-        temp += __shfl_down(temp, i);
+        temp += __shfl_down_sync(0xFFFFFFFF, temp, i);
     }
     if (warpTid == 0) {
         tep[warpId] = temp;
@@ -5260,7 +5260,7 @@ void _getDeltaEnergy_Reduction(double* squeue, const double3* b, const double3* 
         temp = tep[threadIdx.x];
         //	warpNum = ((tidNum + 31) >> 5);
         for (int i = 1; i < warpNum; i = (i << 1)) {
-            temp += __shfl_down(temp, i);
+            temp += __shfl_down_sync(0xFFFFFFFF, temp, i);
         }
     }
     if (threadIdx.x == 0) {
@@ -5294,7 +5294,7 @@ void __add_reduction(double* mem, int numbers) {
         warpNum = ((blockDim.x) >> 5);
     }
     for (int i = 1; i < 32; i = (i << 1)) {
-        temp += __shfl_down(temp, i);
+        temp += __shfl_down_sync(0xFFFFFFFF, temp, i);
     }
     if (warpTid == 0) {
         tep[warpId] = temp;
@@ -5306,7 +5306,7 @@ void __add_reduction(double* mem, int numbers) {
         temp = tep[threadIdx.x];
         //	warpNum = ((tidNum + 31) >> 5);
         for (int i = 1; i < warpNum; i = (i << 1)) {
-            temp += __shfl_down(temp, i);
+            temp += __shfl_down_sync(0xFFFFFFFF, temp, i);
         }
     }
     if (threadIdx.x == 0) {
