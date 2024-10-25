@@ -1,4 +1,5 @@
-FROM nvidia/cuda:11.8.0-devel-ubuntu22.04
+# Stage 1: Build
+FROM nvidia/cuda:11.8.0-devel-ubuntu22.04 AS builder
 
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -28,6 +29,9 @@ RUN apt-get update && \
         libcusparse-11-8 \
         libcusolver-11-8 \
         libcudart-dev-11-8 \
+        libcublas-dev-11-8 \
+        libcusparse-dev-11-8 \
+        libcusolver-dev-11-8 \
         && rm -rf /var/lib/apt/lists/* && \
     ccache -M 5G && \
     ccache -o compression=true && \
@@ -54,6 +58,11 @@ RUN cmake .. \
     -DCMAKE_CUDA_COMPILER=${CUDA_HOME}/bin/nvcc \
     -DCUDA_ARCHITECTURES=${CUDA_ARCH} \
     -DUSE_CCACHE=ON
+    -DCMAKE_LIBRARY_PATH=/usr/local/cuda-11.8/lib64 \
+    -DCUDA_CUBLAS_LIBRARY=/usr/local/cuda-11.8/lib64/libcublas.so \
+    -DCUDA_CUSPARSE_LIBRARY=/usr/local/cuda-11.8/lib64/libcusparse.so \
+    -DCUDA_CUSOLVER_LIBRARY=/usr/local/cuda-11.8/lib64/libcusolver.so \
+    -DCMAKE_VERBOSE_MAKEFILE=ON
 
 RUN make -j${NUM_JOBS} && \
     ccache -s && \
