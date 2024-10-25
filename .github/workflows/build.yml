@@ -47,14 +47,6 @@ jobs:
           sudo apt-get install -y ccache
           echo 'export PATH="/usr/lib/ccache:$PATH"' >> $GITHUB_ENV
 
-      - name: Verify CUDA installation
-        run: |
-          ls -l /usr/local/cuda-12.5/lib64/
-          nvcc --version
-          echo "CUDA_PATH: $CUDA_PATH"
-          echo "LD_LIBRARY_PATH: $LD_LIBRARY_PATH"
-          echo "LIBRARY_PATH: $LIBRARY_PATH"
-
       - name: Configure CMake
         run: |
           mkdir -p build
