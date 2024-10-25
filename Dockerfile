@@ -1,4 +1,3 @@
-# Use CUDA 11.8 with Ubuntu 22.04 as base image
 FROM nvidia/cuda:11.8.0-devel-ubuntu22.04
 
 ENV DEBIAN_FRONTEND=noninteractive
@@ -37,24 +36,28 @@ ARG CUDA_ARCH=86
 ARG BUILD_TYPE=Release
 ARG NUM_JOBS=8
 
-RUN git clone --recursive --depth 1 ${REPO_URL} . && \
-    mkdir -p build && \
-    cd build && \
-    cmake .. \
-        -GNinja \
-        -DCMAKE_BUILD_TYPE=${BUILD_TYPE} \
-        -DCMAKE_CXX_COMPILER_LAUNCHER=ccache \
-        -DCMAKE_CUDA_COMPILER_LAUNCHER=ccache \
-        -DCUDA_TOOLKIT_ROOT_DIR=${CUDA_HOME} \
-        -DCMAKE_CUDA_COMPILER=${CUDA_HOME}/bin/nvcc \
-        -DCUDA_ARCHITECTURES=${CUDA_ARCH} \
-        -DUSE_CCACHE=ON && \
-    ninja -j${NUM_JOBS} && \
-    ccache -s && \
-    rm -rf ${CCACHE_DIR}/*
+RUN git clone --recursive --depth 1 ${REPO_URL} .
+
+RUN mkdir -p build
 
 WORKDIR /app/build
 
+RUN cmake .. \
+    -GNinja \
+    -DCMAKE_BUILD_TYPE=${BUILD_TYPE} \
+    -DCMAKE_CXX_COMPILER_LAUNCHER=ccache \
+    -DCMAKE_CUDA_COMPILER_LAUNCHER=ccache \
+    -DCUDA_TOOLKIT_ROOT_DIR=${CUDA_HOME} \
+    -DCMAKE_CUDA_COMPILER=${CUDA_HOME}/bin/nvcc \
+    -DCUDA_ARCHITECTURES=${CUDA_ARCH} \
+    -DUSE_CCACHE=ON \
+    -DCMAKE_CXX_FLAGS="-Wno-error" \        # Prevent warnings as errors for C++
+    -DCMAKE_CUDA_FLAGS="-Wno-error"          # Prevent warnings as errors for CUDA
+
+RUN ninja -j${NUM_JOBS} && \
+    ccache -s && \
+    rm -rf ${CCACHE_DIR}/*
+    
 ENV DISPLAY=:0
 
 ENTRYPOINT ["./gipc"]
