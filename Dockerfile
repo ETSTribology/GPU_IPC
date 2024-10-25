@@ -27,7 +27,7 @@ RUN apt-get update && \
         libcublas-11-8 \
         libcusparse-11-8 \
         libcusolver-11-8 \
-        libcudart-static-11-8 \
+        libcudart-dev-11-8 \
         && rm -rf /var/lib/apt/lists/* && \
     ccache -M 5G && \
     ccache -o compression=true && \
@@ -43,7 +43,6 @@ ARG NUM_JOBS=8
 RUN git clone --recursive --depth 1 ${REPO_URL} .
 
 RUN mkdir -p build
-
 WORKDIR /app/build
 
 RUN cmake .. \
