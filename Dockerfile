@@ -50,9 +50,7 @@ RUN cmake .. \
     -DCUDA_TOOLKIT_ROOT_DIR=${CUDA_HOME} \
     -DCMAKE_CUDA_COMPILER=${CUDA_HOME}/bin/nvcc \
     -DCUDA_ARCHITECTURES=${CUDA_ARCH} \
-    -DUSE_CCACHE=ON \
-    -DCMAKE_CXX_FLAGS="-Wno-error" \        # Prevent warnings as errors for C++
-    -DCMAKE_CUDA_FLAGS="-Wno-error"          # Prevent warnings as errors for CUDA
+    -DUSE_CCACHE=ON
 
 RUN ninja -j${NUM_JOBS} && \
     ccache -s && \
