@@ -30,16 +30,32 @@ jobs:
           sub-packages: ${{ matrix.sub_packages }}
           non-cuda-sub-packages: '[]'
 
+      - name: Install CMake
+        uses: lukka/get-cmake@latest
+        with:
+          cmakeVersion: "3.26.0"
+
+      - name: Setup vcpkg
+        uses: lukka/run-vcpkg@v11
+        with:
+          vcpkgDirectory: ${{ github.workspace }}/vcpkg
+          vcpkgGitCommitId: 055721089e8037d4d617250814d11f881e557549
+
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y cmake build-essential libeigen3-dev libglew-dev freeglut3-dev libx11-dev
+          sudo apt-get install -y build-essential libeigen3-dev libglew-dev freeglut3-dev libx11-dev
+
+      - name: Install ccache
+        run: |
+          sudo apt-get install -y ccache
+          echo 'export PATH="/usr/lib/ccache:$PATH"' >> $GITHUB_ENV
 
       - name: Configure CMake
         run: |
           mkdir -p build
           cd build
-          cmake .. -DCMAKE_BUILD_TYPE=Release -DCUDA_ARCHITECTURES="86"
+          cmake .. -DCMAKE_BUILD_TYPE=Release -DCUDA_ARCHITECTURES="86" -DUSE_CCACHE=ON
 
       - name: Build with CMake
         run: |
