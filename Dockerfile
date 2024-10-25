@@ -16,26 +16,29 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 ENV CCACHE_DIR=/ccache
-ENV CC="ccache gcc" CXX="ccache g++" CUDA_NVCC_EXECUTABLE="ccache /usr/local/cuda/bin/nvcc"
-RUN ccache -M 5G  # Set ccache max size to 5GB
+ENV CC="ccache gcc" CXX="ccache g++"
+RUN ccache -M 5G
+
+ENV CUDA_HOME=/usr/local/cuda
+ENV LD_LIBRARY_PATH=${CUDA_HOME}/lib64:${CUDA_HOME}/extras/CUPTI/lib64:${LD_LIBRARY_PATH}
+ENV PATH=${CUDA_HOME}/bin:${PATH}
+ENV LIBRARY_PATH=${CUDA_HOME}/lib64:${LIBRARY_PATH}
 
 WORKDIR /app
 
 ARG REPO_URL=https://github.com/ETSTribology/GPU_IPC.git
 RUN git clone --recursive ${REPO_URL} .
 
-ENV LD_LIBRARY_PATH=/usr/local/cuda/lib64:/usr/local/cuda/extras/CUPTI/lib64:${LD_LIBRARY_PATH}
-ENV PATH=/usr/local/cuda/bin:${PATH}
-
 RUN mkdir -p build && \
     cd build && \
-    cmake .. -DCMAKE_BUILD_TYPE=Release \
-             -DCMAKE_CXX_COMPILER_LAUNCHER=ccache \
-             -DCMAKE_CUDA_COMPILER_LAUNCHER=ccache && \
+    cmake .. \
+        -DCMAKE_BUILD_TYPE=Release \
+        -DCMAKE_CXX_COMPILER_LAUNCHER=ccache \
+        -DCMAKE_CUDA_COMPILER_LAUNCHER=ccache \
+        -DCUDA_TOOLKIT_ROOT_DIR=${CUDA_HOME} \
+        -DCMAKE_CUDA_COMPILER=${CUDA_HOME}/bin/nvcc && \
     cmake --build . -- -j$(nproc)
 
 WORKDIR /app/build
-
 ENV DISPLAY=:0
-
 ENTRYPOINT ["./gipc"]
