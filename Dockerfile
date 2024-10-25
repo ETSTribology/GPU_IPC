@@ -11,8 +11,13 @@ RUN apt-get update && \
     freeglut3-dev \
     libx11-dev \
     git \
-    x11-apps && \
+    x11-apps \
+    ccache && \
     rm -rf /var/lib/apt/lists/*
+
+ENV CCACHE_DIR=/ccache
+ENV CC="ccache gcc" CXX="ccache g++" CUDA_NVCC_EXECUTABLE="ccache /usr/local/cuda/bin/nvcc"
+RUN ccache -M 5G  # Set ccache max size to 5GB
 
 WORKDIR /app
 
@@ -21,7 +26,9 @@ RUN git clone --recursive ${REPO_URL} .
 
 RUN mkdir -p build && \
     cd build && \
-    cmake .. -DCMAKE_BUILD_TYPE=Release && \
+    cmake .. -DCMAKE_BUILD_TYPE=Release \
+             -DCMAKE_CXX_COMPILER_LAUNCHER=ccache \
+             -DCMAKE_CUDA_COMPILER_LAUNCHER=ccache && \
     cmake --build . -- -j$(nproc)
 
 WORKDIR /app/build
