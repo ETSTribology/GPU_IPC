@@ -51,6 +51,16 @@ find_package(GLEW REQUIRED)
 find_package(GLUT REQUIRED)
 find_package(OpenGL REQUIRED)
 
+# Locate CUDA libraries explicitly to ensure availability
+find_library(CUDA_CUSPARSE_LIBRARY cusparse HINTS "${CMAKE_CUDA_IMPLICIT_LINK_DIRECTORIES}")
+find_library(CUDA_CUBLAS_LIBRARY cublas HINTS "${CMAKE_CUDA_IMPLICIT_LINK_DIRECTORIES}")
+find_library(CUDA_CUSOLVER_LIBRARY cusolver HINTS "${CMAKE_CUDA_IMPLICIT_LINK_DIRECTORIES}")
+find_library(CUDA_CUDART_LIBRARY cudart_static HINTS "${CMAKE_CUDA_IMPLICIT_LINK_DIRECTORIES}")
+
+if(NOT CUDA_CUSPARSE_LIBRARY OR NOT CUDA_CUBLAS_LIBRARY OR NOT CUDA_CUSOLVER_LIBRARY OR NOT CUDA_CUDART_LIBRARY)
+    message(FATAL_ERROR "Required CUDA libraries not found. Please ensure they are installed and available.")
+endif()
+
 # Display a message summarizing the configuration
 message(STATUS "Building for CUDA architecture: ${CUDA_ARCHITECTURES}")
 message(STATUS "CUDA Compiler: ${CMAKE_CUDA_COMPILER}")
@@ -76,13 +86,16 @@ target_compile_definitions(gipc PRIVATE
 )
 
 # Link CUDA and other necessary libraries with explicit error checking
-foreach(lib cusparse cublas cusolver cudart_static GLUT::GLUT GLEW::GLEW OpenGL::GLU Eigen3::Eigen)
-    if(TARGET ${lib})
-        target_link_libraries(gipc PRIVATE ${lib})
-    else()
-        message(FATAL_ERROR "Required library ${lib} not found. Please ensure it is installed and available.")
-    endif()
-endforeach()
+target_link_libraries(gipc PRIVATE 
+    ${CUDA_CUSPARSE_LIBRARY} 
+    ${CUDA_CUBLAS_LIBRARY} 
+    ${CUDA_CUSOLVER_LIBRARY} 
+    ${CUDA_CUDART_LIBRARY} 
+    GLUT::GLUT 
+    GLEW::GLEW 
+    OpenGL::GLU 
+    Eigen3::Eigen
+)
 
 # CUDA-specific properties and options
 set_target_properties(gipc PROPERTIES
