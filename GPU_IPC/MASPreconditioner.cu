@@ -956,9 +956,9 @@ __global__ void __buildMultiLevelR_optimized(const double3* _R,
     {
         for(int iter = 1; iter < 32; iter <<= 1)
         {
-            r.x += __shfl_down_sync(0xFFFFFFFF, r.x, iter);
-            r.y += __shfl_down_sync(0xFFFFFFFF, r.y, iter);
-            r.z += __shfl_down_sync(0xFFFFFFFF, r.z, iter);
+            r.x += __shfl_down(r.x, iter);
+            r.y += __shfl_down(r.y, iter);
+            r.z += __shfl_down(r.z, iter);
         }
         //int level = 0;
 
@@ -1120,7 +1120,7 @@ __global__ void _schwarzLocalXSym(const __GEIGEN__::Matrix96x96MT* P96,
 
     for(int iter = 1; iter < 32; iter <<= 1)
     {
-        rdata += __shfl_down_sync(0xFFFFFFFF, rdata, iter);
+        rdata += __shfl_down(rdata, iter);
     }
 
     if(!warpId)
@@ -1178,14 +1178,14 @@ __global__ void _schwarzLocalXSym3(const __GEIGEN__::MasMatrixSymf* Pred,
     int  landidx   = threadIdx.x % BANKSIZE;
     bool bBoundary = (landidx == 0) || (warpId == 0);
 
-    unsigned int mark     = __ballot_sync(0xFFFFFFFF, bBoundary);
+    unsigned int mark     = __ballot(bBoundary);  // a bit-mask
     mark                  = __brev(mark);
     unsigned int interval = __mm_min(__clz(mark << (warpId + 1)), 31 - warpId);
 
     int maxSize = __mm_min(32, BANKSIZE);
     for(int iter = 1; iter < maxSize; iter <<= 1)
     {
-        Precision_TM tmpx = __shfl_down_sync(0xFFFFFFFF, rdata, iter);
+        Precision_TM tmpx = __shfl_down(rdata, iter);
         if(interval >= iter)
         {
 

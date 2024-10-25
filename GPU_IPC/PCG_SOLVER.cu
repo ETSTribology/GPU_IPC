@@ -48,7 +48,7 @@ __global__ void PCG_vdv_Reduction(double* squeue, const double3* a, const double
         warpNum = ((blockDim.x) >> 5);
     }
     for (int i = 1; i < 32; i = (i << 1)) {
-        temp += __shfl_down_sync(0xffffffff, temp, i);
+        temp += __shfl_down(temp, i);
     }
     if (warpTid == 0) {
         tep[warpId] = temp;
@@ -60,7 +60,7 @@ __global__ void PCG_vdv_Reduction(double* squeue, const double3* a, const double
         temp = tep[threadIdx.x];
         //	warpNum = ((tidNum + 31) >> 5);
         for (int i = 1; i < warpNum; i = (i << 1)) {
-            temp += __shfl_down_sync(0xffffffff, temp, i);
+            temp += __shfl_down(temp, i);
         }
     }
     if (threadIdx.x == 0) {
@@ -95,7 +95,7 @@ void add_reduction(double* mem, int numbers) {
         warpNum = ((blockDim.x) >> 5);
     }
     for (int i = 1; i < 32; i = (i << 1)) {
-        temp += __shfl_down_sync(0xffffffff, temp, i);
+        temp += __shfl_down(temp, i);
     }
     if (warpTid == 0) {
         tep[warpId] = temp;
@@ -107,7 +107,7 @@ void add_reduction(double* mem, int numbers) {
         temp = tep[threadIdx.x];
         //	warpNum = ((tidNum + 31) >> 5);
         for (int i = 1; i < warpNum; i = (i << 1)) {
-            temp += __shfl_down_sync(0xffffffff, temp, i);
+            temp += __shfl_down(temp, i);
         }
     }
     if (threadIdx.x == 0) {
@@ -146,7 +146,7 @@ __global__ void PCG_add_Reduction_delta0(double* squeue, const __GEIGEN__::Matri
         warpNum = ((blockDim.x) >> 5);
     }
     for (int i = 1; i < 32; i = (i << 1)) {
-        temp += __shfl_down_sync(0xffffffff, temp, i);
+        temp += __shfl_down(temp, i);
     }
     if (warpTid == 0) {
         tep[warpId] = temp;
@@ -158,7 +158,7 @@ __global__ void PCG_add_Reduction_delta0(double* squeue, const __GEIGEN__::Matri
         temp = tep[threadIdx.x];
         //	warpNum = ((tidNum + 31) >> 5);
         for (int i = 1; i < warpNum; i = (i << 1)) {
-            temp += __shfl_down_sync(0xffffffff, temp, i);
+            temp += __shfl_down(temp, i);
         }
     }
     if (threadIdx.x == 0) {
@@ -199,7 +199,7 @@ __global__ void PCG_add_Reduction_deltaN0(double* squeue, const __GEIGEN__::Matr
         warpNum = ((blockDim.x) >> 5);
     }
     for (int i = 1; i < 32; i = (i << 1)) {
-        temp += __shfl_down_sync(0xffffffff, temp, i);
+        temp += __shfl_down(temp, i);
     }
     if (warpTid == 0) {
         tep[warpId] = temp;
@@ -211,7 +211,7 @@ __global__ void PCG_add_Reduction_deltaN0(double* squeue, const __GEIGEN__::Matr
         temp = tep[threadIdx.x];
         //	warpNum = ((tidNum + 31) >> 5);
         for (int i = 1; i < warpNum; i = (i << 1)) {
-            temp += __shfl_down_sync(0xffffffff, temp, i);
+            temp += __shfl_down(temp, i);
         }
     }
     if (threadIdx.x == 0) {
@@ -257,7 +257,7 @@ __global__ void PCG_add_Reduction_deltaN(double* squeue, double3* dx, const doub
         warpNum = ((blockDim.x) >> 5);
     }
     for (int i = 1; i < 32; i = (i << 1)) {
-        temp += __shfl_down_sync(0xffffffff, temp, i);
+        temp += __shfl_down(temp, i);
     }
     if (warpTid == 0) {
         tep[warpId] = temp;
@@ -269,7 +269,7 @@ __global__ void PCG_add_Reduction_deltaN(double* squeue, double3* dx, const doub
         temp = tep[threadIdx.x];
         //	warpNum = ((tidNum + 31) >> 5);
         for (int i = 1; i < warpNum; i = (i << 1)) {
-            temp += __shfl_down_sync(0xffffffff, temp, i);
+            temp += __shfl_down(temp, i);
         }
     }
     if (threadIdx.x == 0) {
@@ -306,7 +306,7 @@ __global__ void PCG_add_Reduction_tempSum(double* squeue, const double3* c, doub
         warpNum = ((blockDim.x) >> 5);
     }
     for (int i = 1; i < 32; i = (i << 1)) {
-        temp += __shfl_down_sync(0xffffffff, temp, i);
+        temp += __shfl_down(temp, i);
     }
     if (warpTid == 0) {
         tep[warpId] = temp;
@@ -318,7 +318,7 @@ __global__ void PCG_add_Reduction_tempSum(double* squeue, const double3* c, doub
         temp = tep[threadIdx.x];
         //	warpNum = ((tidNum + 31) >> 5);
         for (int i = 1; i < warpNum; i = (i << 1)) {
-            temp += __shfl_down_sync(0xffffffff, temp, i);
+            temp += __shfl_down(temp, i);
         }
     }
     if (threadIdx.x == 0) {
@@ -352,7 +352,7 @@ __global__ void PCG_add_Reduction_force(double* squeue, const double3* b, int nu
         warpNum = ((blockDim.x) >> 5);
     }
     for (int i = 1; i < 32; i = (i << 1)) {
-        temp += __shfl_down_sync(0xffffffff, temp, i);
+        temp += __shfl_down(temp, i);
     }
     if (warpTid == 0) {
         tep[warpId] = temp;
@@ -364,7 +364,7 @@ __global__ void PCG_add_Reduction_force(double* squeue, const double3* b, int nu
         temp = tep[threadIdx.x];
         //	warpNum = ((tidNum + 31) >> 5);
         for (int i = 1; i < warpNum; i = (i << 1)) {
-            temp += __shfl_down_sync(0xffffffff, temp, i);
+            temp += __shfl_down(temp, i);
         }
     }
     if (threadIdx.x == 0) {
@@ -523,12 +523,12 @@ __global__ void __PCG_Solve_AXALL_b2(const __GEIGEN__::Matrix12x12d* Hessians12,
         int warpId = threadIdx.x & 0x1f;
         bool bBoundary = (landidx == 0) || (warpId == 0);
 
-        unsigned int mark = __ballot_sync(0xffffffff, bBoundary);
+        unsigned int mark = __ballot(bBoundary);
         mark = __brev(mark);
         unsigned int interval = __m_min(__clz(mark << (warpId + 1)), 31 - warpId);
 
         for (int iter = 1; iter < 12; iter <<= 1) {
-            double tmp = __shfl_down_sync(0xffffffff, rdata, iter);
+            double tmp = __shfl_down(rdata, iter);
             if (interval >= iter) rdata += tmp;
         }
 
@@ -563,12 +563,12 @@ __global__ void __PCG_Solve_AXALL_b2(const __GEIGEN__::Matrix12x12d* Hessians12,
         int warpId = threadIdx.x & 0x1f;
         bool bBoundary = (landidx == 0) || (warpId == 0);
 
-        unsigned int mark = __ballot_sync(0xffffffff, bBoundary);
+        unsigned int mark = __ballot(bBoundary); // a bit-mask 
         mark = __brev(mark);
         unsigned int interval = __m_min(__clz(mark << (warpId + 1)), 31 - warpId);
 
         for (int iter = 1; iter < 9; iter <<= 1) {
-            double tmp = __shfl_down_sync(0xffffffff, rdata, iter);
+            double tmp = __shfl_down(rdata, iter);
             if (interval >= iter) rdata += tmp;
         }
 
@@ -603,12 +603,12 @@ __global__ void __PCG_Solve_AXALL_b2(const __GEIGEN__::Matrix12x12d* Hessians12,
         int warpId = threadIdx.x & 0x1f;
         bool bBoundary = (landidx == 0) || (warpId == 0);
 
-        unsigned int mark = __ballot_sync(0xffffffff, bBoundary);
+        unsigned int mark = __ballot(bBoundary);
         mark = __brev(mark);
         unsigned int interval = __m_min(__clz(mark << (warpId + 1)), 31 - warpId);
 
         for (int iter = 1; iter < 6; iter <<= 1) {
-            double tmp = __shfl_down_sync(0xffffffff, rdata, iter);
+            double tmp = __shfl_down(rdata, iter);
             if (interval >= iter) rdata += tmp;
         }
 
@@ -664,19 +664,19 @@ __global__ void __PCG_Solve_AX12_b2(const __GEIGEN__::Matrix12x12d* Hessians, co
     int warpId = threadIdx.x & 0x1f;
     bool bBoundary = (landidx == 0) || (warpId == 0);
 
-    unsigned int mark = __ballot_sync(0xffffffff, bBoundary);
+    unsigned int mark = __ballot(bBoundary);
     mark = __brev(mark);
     unsigned int interval = __m_min(__clz(mark << (warpId + 1)), 31 - warpId);
     //mark = interval;
     //for (int iter = 1; iter & 0x1f; iter <<= 1) {
-    //    int tmp = __shfl_down(rdata, iter);
+    //    int tmp = __shfl_down(mark, iter);
     //    mark = tmp > mark ? tmp : mark; 
     //}
     //mark = __shfl(mark, 0);
     //__syncthreads();
 
     for (int iter = 1; iter < 12; iter <<= 1) {
-        double tmp = __shfl_down_sync(0xffffffff, rdata, iter);
+        double tmp = __shfl_down(rdata, iter);
         if (interval >= iter) rdata += tmp;
     }
 
@@ -743,12 +743,12 @@ __global__ void __PCG_Solve_AX12_b3(const __GEIGEN__::Matrix12x12d* Hessians, co
     int warpId = threadIdx.x & 0x1f;
     bool bBoundary = (landidx == 0) || (warpId == 0);
 
-    unsigned int mark = __ballot_sync(0xffffffff, bBoundary);
+    unsigned int mark = __ballot(bBoundary);
     mark = __brev(mark);
     unsigned int interval = __m_min(__clz(mark << (warpId + 1)), 31 - warpId);
 
     for (int iter = 1; iter < 12; iter <<= 1) {
-        double tmp = __shfl_down_sync(0xffffffff, rdata, iter);
+        double tmp = __shfl_down(rdata, iter);
         if (interval >= iter) rdata += tmp;
     }
 
@@ -927,7 +927,7 @@ __global__ void __PCG_Solve_AX9_b2(const __GEIGEN__::Matrix9x9d* Hessians, const
     int warpId = threadIdx.x & 0x1f;
     bool bBoundary = (landidx == 0) || (warpId == 0);
 
-    unsigned int mark = __ballot_sync(0xffffffff, bBoundary);
+    unsigned int mark = __ballot(bBoundary); // a bit-mask 
     mark = __brev(mark);
     unsigned int interval = __m_min(__clz(mark << (warpId + 1)), 31 - warpId);
     //mark = interval;
@@ -939,7 +939,7 @@ __global__ void __PCG_Solve_AX9_b2(const __GEIGEN__::Matrix9x9d* Hessians, const
     //__syncthreads();
 
     for (int iter = 1; iter < 9; iter <<= 1) {
-        double tmp = __shfl_down_sync(0xffffffff, rdata, iter);
+        double tmp = __shfl_down(rdata, iter);
         if (interval >= iter) rdata += tmp;
     }
 
@@ -1025,7 +1025,7 @@ __global__ void __PCG_Solve_AX6_b2(const __GEIGEN__::Matrix6x6d* Hessians, const
     int warpId = threadIdx.x & 0x1f;
     bool bBoundary = (landidx == 0) || (warpId == 0);
 
-    unsigned int mark = __ballot_sync(0xffffffff, bBoundary);
+    unsigned int mark = __ballot(bBoundary);
     mark = __brev(mark);
     unsigned int interval = __m_min(__clz(mark << (warpId + 1)), 31 - warpId);
     //mark = interval;
@@ -1037,7 +1037,7 @@ __global__ void __PCG_Solve_AX6_b2(const __GEIGEN__::Matrix6x6d* Hessians, const
     //__syncthreads();
 
     for (int iter = 1; iter < 6; iter <<= 1) {
-        double tmp = __shfl_down_sync(0xffffffff, rdata, iter);
+        double tmp = __shfl_down(rdata, iter);
         if (interval >= iter) rdata += tmp;
     }
 
@@ -1120,19 +1120,19 @@ __global__ void __PCG_Solve_AX3_b2(const __GEIGEN__::Matrix3x3d* Hessians, const
     int warpId = threadIdx.x & 0x1f;
     bool bBoundary = (landidx == 0) || (warpId == 0);
 
-    unsigned int mark = __ballot_sync(0xffffffff, bBoundary);
+    unsigned int mark = __ballot(bBoundary);
     mark = __brev(mark);
     unsigned int interval = __m_min(__clz(mark << (warpId + 1)), 31 - warpId);
     mark = interval;
     for (int iter = 1; iter & 0x1f; iter <<= 1) {
-        int tmp = __shfl_down_sync(0xffffffff, rdata, iter);
+        int tmp = __shfl_down(mark, iter);
         mark = tmp > mark ? tmp : mark;
     }
-    mark = __shfl_sync(0xffffffff, mark, 0);
+    mark = __shfl(mark, 0);
     __syncthreads();
 
     for (int iter = 1; iter <= mark; iter <<= 1) {
-        double tmp = __shfl_down_sync(0xffffffff, rdata, iter);
+        double tmp = __shfl_down(rdata, iter);
         if (interval >= iter) rdata += tmp;
     }
 

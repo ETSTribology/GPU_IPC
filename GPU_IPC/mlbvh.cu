@@ -862,15 +862,8 @@ void _reduct_max_box(AABB* _leafBoxes, int number) {
         warpNum = ((blockDim.x) >> 5);
     }
     for (int i = 1; i < tidNum; i = (i << 1)) {
-        unsigned int mask = 0xFFFFFFFF;
-        temp.combines(
-            __shfl_down_sync(mask, xmin, i), 
-            __shfl_down_sync(mask, ymin, i), 
-            __shfl_down_sync(mask, zmin, i),
-            __shfl_down_sync(mask, xmax, i), 
-            __shfl_down_sync(mask, ymax, i), 
-            __shfl_down_sync(mask, zmax, i)
-        );
+        temp.combines(__shfl_down(xmin, i), __shfl_down(ymin, i), __shfl_down(zmin, i),
+            __shfl_down(xmax, i), __shfl_down(ymax, i), __shfl_down(zmax, i));
         if (warpTid + i < tidNum) {
             xmin = temp.lower.x, ymin = temp.lower.y, zmin = temp.lower.z;
             xmax = temp.upper.x, ymax = temp.upper.y, zmax = temp.upper.z;
@@ -888,15 +881,8 @@ void _reduct_max_box(AABB* _leafBoxes, int number) {
         xmax = temp.upper.x, ymax = temp.upper.y, zmax = temp.upper.z;
         //	warpNum = ((tidNum + 31) >> 5);
         for (int i = 1; i < warpNum; i = (i << 1)) {
-            unsigned int mask = 0xFFFFFFFF; // All threads in the warp are active
-            temp.combines(
-                __shfl_down_sync(mask, xmin, i), 
-                __shfl_down_sync(mask, ymin, i), 
-                __shfl_down_sync(mask, zmin, i),
-                __shfl_down_sync(mask, xmax, i), 
-                __shfl_down_sync(mask, ymax, i), 
-                __shfl_down_sync(mask, zmax, i)
-            );
+            temp.combines(__shfl_down(xmin, i), __shfl_down(ymin, i), __shfl_down(zmin, i),
+                __shfl_down(xmax, i), __shfl_down(ymax, i), __shfl_down(zmax, i));
             if (threadIdx.x + i < warpNum) {
                 xmin = temp.lower.x, ymin = temp.lower.y, zmin = temp.lower.z;
                 xmax = temp.upper.x, ymax = temp.upper.y, zmax = temp.upper.z;
