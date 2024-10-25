@@ -23,8 +23,12 @@ RUN apt-get update && \
         git \
         x11-apps \
         ccache \
-        ninja-build && \
-    rm -rf /var/lib/apt/lists/* && \
+        make \
+        libcublas-11-8 \
+        libcusparse-11-8 \
+        libcusolver-11-8 \
+        libcudart-static-11-8 \
+        && rm -rf /var/lib/apt/lists/* && \
     ccache -M 5G && \
     ccache -o compression=true && \
     ccache -o compression_level=9
@@ -43,7 +47,7 @@ RUN mkdir -p build
 WORKDIR /app/build
 
 RUN cmake .. \
-    -GNinja \
+    -G"Unix Makefiles" \
     -DCMAKE_BUILD_TYPE=${BUILD_TYPE} \
     -DCMAKE_CXX_COMPILER_LAUNCHER=ccache \
     -DCMAKE_CUDA_COMPILER_LAUNCHER=ccache \
@@ -52,10 +56,10 @@ RUN cmake .. \
     -DCUDA_ARCHITECTURES=${CUDA_ARCH} \
     -DUSE_CCACHE=ON
 
-RUN ninja -j${NUM_JOBS} && \
+RUN make -j${NUM_JOBS} && \
     ccache -s && \
     rm -rf ${CCACHE_DIR}/*
-    
+
 ENV DISPLAY=:0
 
 ENTRYPOINT ["./gipc"]
