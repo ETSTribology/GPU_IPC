@@ -19,8 +19,19 @@ if(NOT DEFINED CUDA_ARCHITECTURES)
     set(CUDA_ARCHITECTURES "86" CACHE STRING "CUDA architectures to compile for")
 endif()
 
+# Set CUDA toolkit root directory if not already set
+if(NOT DEFINED CUDA_TOOLKIT_ROOT_DIR)
+    set(CUDA_TOOLKIT_ROOT_DIR "/usr/local/cuda" CACHE PATH "CUDA Toolkit root directory")
+endif()
+
 # Set CUDA compiler path only if not auto-detected
-find_program(CMAKE_CUDA_COMPILER NAMES nvcc PATHS /usr/local/cuda/bin /opt/cuda/bin NO_DEFAULT_PATH)
+find_program(CMAKE_CUDA_COMPILER NAMES nvcc 
+    PATHS 
+    ${CUDA_TOOLKIT_ROOT_DIR}/bin
+    /usr/local/cuda/bin 
+    /opt/cuda/bin 
+    NO_DEFAULT_PATH
+)
 if(NOT CMAKE_CUDA_COMPILER)
     message(FATAL_ERROR "CUDA compiler (nvcc) not found. Please ensure CUDA is installed and nvcc is in your PATH.")
 endif()
@@ -51,11 +62,39 @@ find_package(GLEW REQUIRED)
 find_package(GLUT REQUIRED)
 find_package(OpenGL REQUIRED)
 
-# Locate CUDA libraries explicitly to ensure availability
-find_library(CUDA_CUSPARSE_LIBRARY cusparse HINTS "${CMAKE_CUDA_IMPLICIT_LINK_DIRECTORIES}")
-find_library(CUDA_CUBLAS_LIBRARY cublas HINTS "${CMAKE_CUDA_IMPLICIT_LINK_DIRECTORIES}")
-find_library(CUDA_CUSOLVER_LIBRARY cusolver HINTS "${CMAKE_CUDA_IMPLICIT_LINK_DIRECTORIES}")
-find_library(CUDA_CUDART_LIBRARY cudart_static HINTS "${CMAKE_CUDA_IMPLICIT_LINK_DIRECTORIES}")
+# Enhanced CUDA library search paths
+list(APPEND CUDA_LIBRARY_SEARCH_PATHS
+    "${CMAKE_CUDA_IMPLICIT_LINK_DIRECTORIES}"
+    "${CUDA_TOOLKIT_ROOT_DIR}/lib64"
+    "${CUDA_TOOLKIT_ROOT_DIR}/lib"
+    "/usr/local/cuda/lib64"
+    "/usr/lib/x86_64-linux-gnu"
+)
+
+# Locate CUDA libraries explicitly with enhanced search paths
+find_library(CUDA_CUSPARSE_LIBRARY cusparse
+    HINTS ${CUDA_LIBRARY_SEARCH_PATHS}
+    NO_DEFAULT_PATH
+)
+find_library(CUDA_CUBLAS_LIBRARY cublas
+    HINTS ${CUDA_LIBRARY_SEARCH_PATHS}
+    NO_DEFAULT_PATH
+)
+find_library(CUDA_CUSOLVER_LIBRARY cusolver
+    HINTS ${CUDA_LIBRARY_SEARCH_PATHS}
+    NO_DEFAULT_PATH
+)
+find_library(CUDA_CUDART_LIBRARY cudart_static
+    HINTS ${CUDA_LIBRARY_SEARCH_PATHS}
+    NO_DEFAULT_PATH
+)
+
+# Verbose output for debugging library paths
+message(STATUS "CUDA Library Search Paths: ${CUDA_LIBRARY_SEARCH_PATHS}")
+message(STATUS "Found CUSPARSE: ${CUDA_CUSPARSE_LIBRARY}")
+message(STATUS "Found CUBLAS: ${CUDA_CUBLAS_LIBRARY}")
+message(STATUS "Found CUSOLVER: ${CUDA_CUSOLVER_LIBRARY}")
+message(STATUS "Found CUDART: ${CUDA_CUDART_LIBRARY}")
 
 if(NOT CUDA_CUSPARSE_LIBRARY OR NOT CUDA_CUBLAS_LIBRARY OR NOT CUDA_CUSOLVER_LIBRARY OR NOT CUDA_CUDART_LIBRARY)
     message(FATAL_ERROR "Required CUDA libraries not found. Please ensure they are installed and available.")
@@ -74,7 +113,11 @@ file(GLOB_RECURSE GIPC_HEADERS CONFIGURE_DEPENDS "GPU_IPC/*.h" "GPU_IPC/*.cuh" "
 add_executable(gipc ${GIPC_SOURCES} ${GIPC_HEADERS})
 
 # Include directories for target
-target_include_directories(gipc PRIVATE "GPU_IPC/")
+target_include_directories(gipc 
+    PRIVATE 
+        "GPU_IPC/"
+        ${CUDA_TOOLKIT_ROOT_DIR}/include
+)
 
 # Set asset and output directories as compile-time definitions
 target_compile_definitions(gipc PRIVATE 
@@ -128,6 +171,7 @@ message(STATUS "Configuration Summary:")
 message(STATUS "  - C++ Standard: ${CMAKE_CXX_STANDARD}")
 message(STATUS "  - CUDA Standard: ${CMAKE_CUDA_STANDARD}")
 message(STATUS "  - CUDA Architectures: ${CUDA_ARCHITECTURES}")
+message(STATUS "  - CUDA Toolkit Root: ${CUDA_TOOLKIT_ROOT_DIR}")
 message(STATUS "  - Eigen3: ${Eigen3_FOUND}")
 message(STATUS "  - GLEW: ${GLEW_FOUND}")
 message(STATUS "  - GLUT: ${GLUT_FOUND}")
