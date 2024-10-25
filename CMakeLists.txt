@@ -25,6 +25,21 @@ if(NOT CMAKE_CUDA_COMPILER)
     message(FATAL_ERROR "CUDA compiler (nvcc) not found. Please ensure CUDA is installed and nvcc is in your PATH.")
 endif()
 
+# Optionally enable ccache
+option(USE_CCACHE "Enable ccache for faster builds" OFF)
+if(USE_CCACHE)
+    find_program(CCACHE_FOUND ccache)
+    if(CCACHE_FOUND)
+        message(STATUS "ccache found and enabled.")
+        set(CMAKE_CXX_COMPILER_LAUNCHER ccache)
+        set(CMAKE_CUDA_COMPILER_LAUNCHER ccache)
+    else()
+        message(WARNING "ccache not found, builds may be slower. To enable, install ccache or set USE_CCACHE=OFF.")
+    endif()
+else()
+    message(STATUS "ccache not enabled by user (USE_CCACHE=OFF).")
+endif()
+
 # Optimization flags for Release mode
 if(CMAKE_BUILD_TYPE STREQUAL "Release")
     set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3")
