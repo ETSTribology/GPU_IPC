@@ -1,0 +1,55 @@
+name: Build GPU IPC
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    # Using an Ubuntu runner; this workflow assumes the setup can install CUDA libraries on it.
+    runs-on: ubuntu-20.04
+
+    steps:
+      # Step 1: Check out the repository code
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Step 2: Set up dependencies
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cmake build-essential libeigen3-dev libglew-dev freeglut3-dev libx11-dev
+
+      # Step 3: Set up CUDA environment
+      - name: Install CUDA
+        run: |
+          sudo apt-get install -y wget gnupg
+          wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/cuda-ubuntu2004.pin
+          sudo mv cuda-ubuntu2004.pin /etc/apt/preferences.d/cuda-repository-pin-600
+          sudo apt-key adv --fetch-keys https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/3bf863cc.pub
+          sudo add-apt-repository "deb https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/ /"
+          sudo apt-get update
+          sudo apt-get -y install cuda-11-8
+
+      # Step 4: Configure the build
+      - name: Configure CMake
+        run: |
+          mkdir -p build
+          cd build
+          cmake .. -DCMAKE_BUILD_TYPE=Release
+
+      # Step 5: Build the project
+      - name: Build with CMake
+        run: |
+          cd build
+          make -j$(nproc)
+
+      # Step 6: Run tests (if any tests are configured in CMake)
+      - name: Run tests
+        run: |
+          cd build
+          ctest --output-on-failure
