@@ -2,7 +2,8 @@ FROM nvidia/cuda:11.8.0-devel-ubuntu22.04
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-RUN apt-get update && apt-get install -y \
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
     cmake \
     build-essential \
     libeigen3-dev \
@@ -10,16 +11,21 @@ RUN apt-get update && apt-get install -y \
     freeglut3-dev \
     libx11-dev \
     git \
-    && rm -rf /var/lib/apt/lists/*
+    x11-apps && \
+    rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
-RUN git clone --recursive <REPO_URL> .
+ARG REPO_URL=https://github.com/ETSTribology/GPU_IPC.git
+RUN git clone --recursive ${REPO_URL} .
 
-RUN mkdir -p build && cd build \
-    && cmake .. -DCMAKE_BUILD_TYPE=Release \
-    && make -j$(nproc)
+RUN mkdir -p build && \
+    cd build && \
+    cmake .. -DCMAKE_BUILD_TYPE=Release && \
+    cmake --build . -- -j$(nproc)
 
 WORKDIR /app/build
 
-CMD ["./gipc"]
+ENV DISPLAY=:0
+
+ENTRYPOINT ["./gipc"]
