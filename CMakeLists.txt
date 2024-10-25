@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.18)    
 # support relative path, cuda_std_17, archive manipulation
-set(CMAKE_CUDA_ARCHITECTURES compute_SM_86)
+#set(CMAKE_CUDA_ARCHITECTURES compute_SM_86)
 
 # project meta
 # ============
