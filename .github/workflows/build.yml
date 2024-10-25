@@ -23,7 +23,7 @@ jobs:
         with:
           cuda: '11.8.0'
           method: 'network'
-          sub-packages: '["nvcc", "cudart", "libcublas", "libcusparse", "libcusolver"]'
+          sub-packages: '["nvcc", "cudart", "cublas", "cusparse", "cusolver"]'
           non-cuda-sub-packages: '[]'
 
       - name: Install CMake
