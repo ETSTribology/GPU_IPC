@@ -57,7 +57,7 @@ RUN cmake .. \
     -DCUDA_TOOLKIT_ROOT_DIR=${CUDA_HOME} \
     -DCMAKE_CUDA_COMPILER=${CUDA_HOME}/bin/nvcc \
     -DCUDA_ARCHITECTURES=${CUDA_ARCH} \
-    -DUSE_CCACHE=ON
+    -DUSE_CCACHE=ON \
     -DCMAKE_LIBRARY_PATH=/usr/local/cuda-11.8/lib64 \
     -DCUDA_CUBLAS_LIBRARY=/usr/local/cuda-11.8/lib64/libcublas.so \
     -DCUDA_CUSPARSE_LIBRARY=/usr/local/cuda-11.8/lib64/libcusparse.so \
